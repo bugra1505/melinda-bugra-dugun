@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melinda & Buğra • 09 Ağustos 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #f8f5f1;
+            color: #2c2520;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 580px;
+            width: 100%;
+            padding: 70px 45px 60px;
+            text-align: center;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0e9e0;
+        }
+
+        .date {
+            font-size: 1em;
+            letter-spacing: 6px;
+            color: #9c7f5f;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.1em;
+            font-weight: 700;
+            color: #2c2520;
+            margin: 12px 0 10px;
+            letter-spacing: -1.5px;
+        }
+
+        .amp {
+            color: #c9a66b;
+            font-size: 1.15em;
+        }
+
+        .description {
+            font-size: 1.02em;
+            line-height: 1.8;
+            color: #5c5148;
+            max-width: 460px;
+            margin: 0 auto 45px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            color: #8a7359;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #e8dfcf;
+            border-radius: 12px;
+            font-size: 1.05em;
+            background: #fdfcf9;
+        }
+
+        .upload-box {
+            border: 2px dashed #d4c2a8;
+            border-radius: 18px;
+            padding: 55px 30px;
+            background: #fbf8f3;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .upload-box:hover {
+            border-color: #c9a66b;
+            background: #f6f1e8;
+        }
+
+        .upload-icon {
+            font-size: 3.4em;
+            margin-bottom: 12px;
+            color: #b89a6f;
+        }
+
+        button {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #8c6b4f, #a38c6e);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.12em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(140, 107, 79, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(140, 107, 79, 0.35);
+        }
+
+        #status {
+            margin-top: 30px;
+            font-size: 1.05em;
+            min-height: 55px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="date">09 AĞUSTOS 2026</div>
+        <h1>Melinda <span class="amp">&amp;</span> Buğra</h1>
+        
+        <p class="description">
+            Bu özel günümüzde yanımızda olduğunuz için teşekkür ederiz.<br>
+            Çektiğiniz fotoğrafları bizimle paylaşarak anılarımızı kalıcı kılın ❤️
+        </p>
+
+        <div class="form-group">
+            <label>ADINIZ (İSTEĞE BAĞLI)</label>
+            <input type="text" id="name" placeholder="Örn. Elif Demir">
+        </div>
+
+        <div class="form-group">
+            <label>FOTOĞRAFLAR</label>
+            <div class="upload-box" onclick="document.getElementById('photo').click()">
+                <div class="upload-icon">📷</div>
+                <p style="color: #8c6b4f; font-size: 1.05em; font-weight: 500;">Fotoğraflarınızı seçmek için dokunun veya sürükleyin</p>
+            </div>
+            <input type="file" id="photo" accept="image/*" multiple style="display:none;">
+        </div>
+
+        <button onclick="uploadPhotos()">FOTOĞRAFLARI YÜKLE</button>
+
+        <p id="status"></p>
+    </div>
+
+    <script>
+        async function uploadPhotos() {
+            const files = document.getElementById('photo').files;
+            const name = document.getElementById('name').value.trim();
+            const status = document.getElementById('status');
+
+            if (files.length === 0) {
+                status.innerHTML = "❌ Lütfen en az bir fotoğraf seçin.";
+                return;
+            }
+
+            status.innerHTML = "⏳ Fotoğraflar yükleniyor, lütfen bekleyin...";
+
+            let success = 0;
+            for (let file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+                if (name) formData.append('name', name);
+
+                try {
+                    const res = await fetch('https://api.imgbb.com/1/upload?key=BURAYA_OWN_API_KEY_INI_YAZ', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (res.ok) success++;
+                } catch(e) {}
+            }
+
+            if (success > 0) {
+                status.innerHTML = `✅ <strong>${success} fotoğraf başarıyla yüklendi.</strong><br>Teşekkür ederiz, çok değerlisiniz ❤️`;
+            } else {
+                status.innerHTML = "⚠️ Yükleme sırasında bir sorun oluştu. Lütfen tekrar deneyin.";
+            }
+        }
+    </script>
+</body>
+</html>
